@@ -5,5 +5,6 @@ public class Main {
 
         CLI cli = new CLI("fcl/fuzzyness.fcl");
         cli.run();
+        cli.showAllCharts();
     }
 }

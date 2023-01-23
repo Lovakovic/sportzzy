@@ -8,7 +8,7 @@ import ui.except.CouldntLoadFileException;
 import java.util.*;
 
 public class CLI {
-    private FIS fis;
+    private final FIS fis;
 
     public CLI(String strPathToFcl) throws CouldntLoadFileException {
         this.fis = FIS.load(strPathToFcl);
@@ -46,14 +46,14 @@ public class CLI {
      */
     private Map<String, Double> usePredefined()  {
         Map<String, Double> variables = new HashMap<>();
-        variables.put("current_fitness", 0.5);
-        variables.put("impact_level", 0.);
+        variables.put("current_fitness", 4.);
+        variables.put("impact_level", 10.);
         variables.put("number_of_teammates", 0.);
-        variables.put("extremity_level", 0.6);
-        variables.put("time_required", 0.);
-        variables.put("season_dependence", 5.);
-        variables.put("location_dependence", 5.);
-        variables.put("budget_friendliness", 0.);
+        variables.put("extremity_level", 10.);
+        variables.put("time_required", 10.);
+        variables.put("season_dependence", 10.);
+        variables.put("location_dependence", 10.);
+        variables.put("budget_friendliness", 10.);
 
         return variables;
     }
@@ -88,7 +88,7 @@ public class CLI {
         System.out.print("Sport location dependence (0 - completely independent, 10 - entirely dependant): ");
         variables.put("location_dependence", input.nextDouble());
 
-        System.out.print("Budget friendliness (0 - cheap, 10 - expensive): ");
+        System.out.print("Budget friendliness (0 - expensive, 10 - cheap): ");
         variables.put("budget_friendliness", input.nextDouble());
 
         return variables;
@@ -103,17 +103,30 @@ public class CLI {
         System.out.println("Please input the numbers within a specified range in accordance to desired sport " +
                 "attributes.");
 
-        Map<String, Double> userVariables = this.usePredefined();
+        Map<String, Double> userVariables = this.queryVariables();
         this.setFisVariables(userVariables);
         this.fis.evaluate();
 
-        System.out.println(variableToSport(fis.getVariable("decision")));
+
+//        showDefuzzifiedChart(fis.getVariable("decision"));
+//        System.out.println(variableToSport(fis.getVariable("decision")));
+
+        Variable decision = fis.getVariable("decision");
+        System.out.println("The best sport that suits your input is " + variableToSport(decision) + ".");
     }
 
     /**
      * Displays the charts of fuzzified and defuzzified variables defined ini .fcl file.
      */
-    public void showCharts(){
+    public void showAllCharts(){
         JFuzzyChart.get().chart(this.fis.getFunctionBlock("sport"));
+    }
+
+    /**
+     * Displays the chart of a defuzzified variable. Note: has to be in DEFUZZIFY block in .fcl file.
+     * @param defuzzifiedVariable A variable for which to display chart of.
+     */
+    public void showDefuzzifiedChart(Variable defuzzifiedVariable) {
+        JFuzzyChart.get().chart(defuzzifiedVariable, defuzzifiedVariable.getDefuzzifier(), true);
     }
 }

@@ -58,26 +58,27 @@ FUZZIFY location_dependence
 END_FUZZIFY
 
 FUZZIFY budget_friendliness
-    TERM cheap := (0,1)(2.5,0);
-    TERM affordable := (1,0)(3,1)(4.5,0);
-    TERM expensive := (4,0)(10,1);
+    TERM expensive := (0,1)(1,1)(4.5,0);
+    TERM affordable := (4,0)(5.5,1)(8.5,0);
+    TERM cheap := (6,0)(10,1);
 END_FUZZIFY
 
 
 DEFUZZIFY decision
-    TERM swimming := (0,0)(5,1)(10,0);
+    TERM swimming := (2.5,0)(4.25,1)(4.60,1)(6.5,0);
     TERM hiking := (0,0)(6,1)(10,0);
-    TERM alpinism := (0,0)(8,1)(10,0);
-    TERM football := (0,0)(5,1)(10,0);
+    TERM alpinism := (5,0)(5.70,1)(8.5,1);
+    TERM football := (0,0)(1.6,1)(3,0);
     TERM running := (0,0)(6,1)(10,0);
     TERM golf := (0,0)(8,1)(10,0);
-    TERM base_jumping := (0,0)(7,1)(10,0);
-    TERM cycling := (0,0)(5,1)(10,0);
+    TERM base_jumping := (4,0)(5,1)(7,0);
+    TERM cycling := (3,0)(5.37,1)(7,0);
     TERM tennis := (0,0)(6,1)(10,0);
-    TERM ice_hockey := (0,0)(7,1)(10,0);
-    TERM surfing := (0,0)(8,1)(10,0);
+    TERM ice_hockey := (5,0)(7,1)(9,0);
+    TERM surfing := (6,0)(8,1)(10,0);
     TERM kayaking := (0,0)(5,1)(10,0);
     TERM rafting := (0,0)(6,1)(10,0);
+    TERM walking := (0,0)(1.5,1)(3,0);
     METHOD : COG;
     DEFAULT := 0;
 END_DEFUZZIFY
@@ -116,7 +117,7 @@ RULE 6 : IF current_fitness IS poor AND impact_level IS low AND number_of_teamma
 not_extreme AND time_required IS low OR time_required IS medium AND season_dependence IS entirely_dependant AND
 location_dependence IS entirely_dependant AND budget_friendliness IS affordable THEN decision IS golf;
 
-RULE 7 : IF current_fitness IS excellent AND impact_level IS high AND number_of_teammates IS none AND extremity_level IS
+RULE 7 : IF current_fitness IS decent AND impact_level IS high AND number_of_teammates IS none AND extremity_level IS
 extreme AND time_required IS high AND season_dependence IS entirely_dependant AND location_dependence IS
 entirely_dependant AND budget_friendliness IS expensive THEN decision IS base_jumping;
 
@@ -136,17 +137,20 @@ AND budget_friendliness IS affordable THEN decision IS ice_hockey;
 
 RULE 11 : IF current_fitness IS good AND impact_level IS high AND number_of_teammates IS none AND extremity_level IS
 extreme AND time_required IS low OR time_required IS medium AND season_dependence IS entirely_dependant AND
-location_dependence IS entirely_dependant THEN decision IS surfing;
+location_dependence IS entirely_dependant AND budget_friendliness IS affordable THEN decision IS surfing;
 
 RULE 12 : IF current_fitness IS decent OR current_fitness IS good AND impact_level IS high AND number_of_teammates IS
-none OR number_of_teammates IS few OR extremity_level IS not_extreme AND time_required IS medium OR time_required IS
+none OR number_of_teammates IS few AND extremity_level IS not_extreme AND time_required IS medium OR time_required IS
 high AND season_dependence IS somewhat_dependant AND location_dependence IS entirely_dependant AND budget_friendliness
 IS affordable THEN decision IS kayaking;
 
-RULE 13 : IF current_fitness IS excellent AND impact_level IS high AND number_of_teammates IS none OR number_of_teammates
-IS few AND extremity_level IS extreme AND time_required IS medium OR time_required IS high AND season_dependence IS
-entirely_dependant AND location_dependence IS entirely_dependant AND budget_friendliness IS expensive THEN decision
-IS rafting;
+RULE 13 : IF current_fitness IS good AND impact_level IS high AND number_of_teammates IS few AND extremity_level IS
+extreme AND time_required IS medium OR time_required IS high AND season_dependence IS entirely_dependant AND
+location_dependence IS entirely_dependant AND budget_friendliness IS expensive THEN decision IS rafting;
+
+RULE 14 : IF current_fitness IS poor AND impact_level IS low AND number_of_teammates IS none AND extremity_level IS
+not_extreme AND time_required IS low AND season_dependence IS independent AND location_dependence IS independent AND
+budget_friendliness IS cheap THEN decision IS walking;
 
 END_RULEBLOCK
 
